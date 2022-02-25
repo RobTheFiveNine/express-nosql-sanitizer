@@ -1,4 +1,5 @@
 # express-nosql-sanitizer
+[![build and test](https://github.com/RobTheFiveNine/express-nosql-sanitizer/actions/workflows/test.yml/badge.svg)](https://github.com/RobTheFiveNine/express-nosql-sanitizer/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/RobTheFiveNine/express-nosql-sanitizer/badge.svg?branch=develop)](https://coveralls.io/github/RobTheFiveNine/express-nosql-sanitizer?branch=develop)
 
 ## Quick Start
 Add the library to your project:
