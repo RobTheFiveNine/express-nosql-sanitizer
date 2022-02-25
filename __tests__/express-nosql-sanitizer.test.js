@@ -146,8 +146,8 @@ describe('if no options are specified', () => {
         safe: 3,
       },
     };
-  
-    middleware(req, {}, next);
+
+    middleware(req, {}, jest.fn());
     expect(req.body).toEqual({
       safe: 3,
     });
