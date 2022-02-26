@@ -1,8 +1,10 @@
 const noSqlSanitizer = require('../src/lib/express-nosql-sanitizer');
 
-function run({ body, mode, onClean }) {
+function run({
+  body, mode, onClean, query,
+}) {
   const next = jest.fn();
-  const req = { body };
+  const req = { body, query };
   const middleware = noSqlSanitizer({
     mode,
     onClean,
@@ -21,9 +23,18 @@ describe('if the the normal mode is used', () => {
         safe: 3,
       },
       mode: noSqlSanitizer.MODE_NORMAL,
+      query: {
+        $unsafe: 1,
+        $ne: 2,
+        safe: 3,
+      },
     });
 
     expect(req.body).toEqual({
+      safe: 3,
+    });
+
+    expect(req.query).toEqual({
       safe: 3,
     });
   });
@@ -38,9 +49,19 @@ describe('if the strict mode is used', () => {
         safe: 3,
       },
       mode: noSqlSanitizer.MODE_STRICT,
+      query: {
+        $unsafe: 1,
+        $ne: 2,
+        safe: 3,
+      },
     });
 
     expect(req.body).toEqual({
+      $unsafe: 1,
+      safe: 3,
+    });
+
+    expect(req.query).toEqual({
       $unsafe: 1,
       safe: 3,
     });
@@ -58,17 +79,34 @@ describe('if the onClean callback is specified', () => {
       },
       mode: noSqlSanitizer.MODE_NORMAL,
       onClean,
+      query: {
+        $unsafe: 1,
+        $ne: 2,
+        safe: 3,
+      },
     });
 
-    expect(onClean).toHaveBeenCalledTimes(2);
+    expect(onClean).toHaveBeenCalledTimes(4);
     expect(onClean).toHaveBeenCalledWith(
-      '.$unsafe',
+      'req.body.$unsafe',
       '$unsafe',
       1,
     );
 
     expect(onClean).toHaveBeenCalledWith(
-      '.$ne',
+      'req.body.$ne',
+      '$ne',
+      2,
+    );
+
+    expect(onClean).toHaveBeenCalledWith(
+      'req.query.$unsafe',
+      '$unsafe',
+      1,
+    );
+
+    expect(onClean).toHaveBeenCalledWith(
+      'req.query.$ne',
       '$ne',
       2,
     );
@@ -86,17 +124,36 @@ describe('if the onClean callback is specified', () => {
       },
       mode: noSqlSanitizer.MODE_NORMAL,
       onClean,
+      query: {
+        unsafeObject: {
+          $unsafe: 1,
+          $ne: 2,
+          safe: 3,
+        },
+      },
     });
 
-    expect(onClean).toHaveBeenCalledTimes(2);
+    expect(onClean).toHaveBeenCalledTimes(4);
     expect(onClean).toHaveBeenCalledWith(
-      '.unsafeObject.$unsafe',
+      'req.body.unsafeObject.$unsafe',
       '$unsafe',
       1,
     );
 
     expect(onClean).toHaveBeenCalledWith(
-      '.unsafeObject.$ne',
+      'req.body.unsafeObject.$ne',
+      '$ne',
+      2,
+    );
+
+    expect(onClean).toHaveBeenCalledWith(
+      'req.query.unsafeObject.$unsafe',
+      '$unsafe',
+      1,
+    );
+
+    expect(onClean).toHaveBeenCalledWith(
+      'req.query.unsafeObject.$ne',
       '$ne',
       2,
     );
@@ -111,9 +168,18 @@ describe('if the mode is not specified', () => {
         $ne: 2,
         safe: 3,
       },
+      query: {
+        $unsafe: 1,
+        $ne: 2,
+        safe: 3,
+      },
     });
 
     expect(req.body).toEqual({
+      safe: 3,
+    });
+
+    expect(req.query).toEqual({
       safe: 3,
     });
   });
@@ -145,10 +211,19 @@ describe('if no options are specified', () => {
         $ne: 2,
         safe: 3,
       },
+      query: {
+        $unsafe: 1,
+        $ne: 2,
+        safe: 3,
+      },
     };
 
     middleware(req, {}, jest.fn());
     expect(req.body).toEqual({
+      safe: 3,
+    });
+
+    expect(req.query).toEqual({
       safe: 3,
     });
   });

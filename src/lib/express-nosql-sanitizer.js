@@ -45,7 +45,14 @@ function createMiddleware({ mode, onClean } = {}) {
     if (typeof req.body === 'object') {
       cleanObject(
         req.body,
-        '',
+        'req.body',
+        mode || MODE_NORMAL,
+        onClean,
+      );
+
+      cleanObject(
+        req.query,
+        'req.query',
         mode || MODE_NORMAL,
         onClean,
       );
