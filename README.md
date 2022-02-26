@@ -114,7 +114,7 @@ The library does not protect from injections where user input is being passed to
 - Refactor your code to not do this
 - Ensure that all user input passed through is sanitised appropriately
 
-It also does not scan `req.params` - the query string parameters are never deserialised and are not susceptible to this type of attack without the developer adding code to deserialise JSON strings. In this case, again, the input must be sanitised manually and refactoring should be considered.
+It also does not scan `req.params` - the URL parameters are never deserialised and are not susceptible to this type of attack without the developer adding code to deserialise JSON strings. In this case, again, the input must be sanitised manually and refactoring should be considered.
 
 ## Advanced Usage
 The function used to create the middleware accepts an optional configuration object that contains two properties:
