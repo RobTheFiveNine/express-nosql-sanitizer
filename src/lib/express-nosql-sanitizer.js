@@ -18,7 +18,7 @@ function checkIsDangerous(key, mode) {
 }
 
 function cleanObject(obj, parentKey, mode, onClean) {
-  if (typeof obj === 'object') {
+  if ((obj !== null) && (typeof obj === 'object')) {
     const keys = Object.keys(obj);
     for (let i = 0; i < keys.length; i += 1) {
       const key = keys[i];
